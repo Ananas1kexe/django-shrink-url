@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Сократитель ссылок</title>
+</head>
+<body>
+    <h1>Сократитель ссылок</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <input type="url" name="url" placeholder="Вставьте длинную ссылку" required>
+        <button type="submit">Сократить</button>
+    </form>
+
+    {% if new_link %}
+        <p>Ваша короткая ссылка:</p>
+        <a href="/{{ new_link.short_id }}" target="_blank">
+            http://localhost:8000/{{ new_link.short_id }}
+        </a>
+    {% endif %}
+</body>
+</html>
