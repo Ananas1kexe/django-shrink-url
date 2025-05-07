@@ -1,23 +1,64 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Сократитель ссылок</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Short</title>
+    <link rel="stylesheet" href="{% static 'app/index.css' %}">
 </head>
 <body>
-    <h1>Сократитель ссылок</h1>
+    <header>
+        <div class="logo">
+            <h3>Short</h3>
+        </div>
+        <div class="nav-links">
+            {% if user.is_authenticated  %}
+            <a href="/profile">Setting</a>
+            <a href="/logout">logout</a>
+            {% else %}
+            <a href="/login">Log in</a>
+            <a href="/register">Register</a>
+            {% endif %}
+        </div>
+        {% if user.is_authenticated  %}
+        <div class="account">
+            <a href="/profile">
+            {% if user %}
+                {% if user.avatar %}
+                <img src="{{user.avatar.url}}" alt="User Avatar" style="width: 50px; height: 50px; border-radius: 50%;">
+                {% endif %}
+                {{user.username}}
+            {% endif %}
+            </a>
+        </div>
+        {% endif %}
+    </header>
+
+
+    <div class="welcom">
+        <div class="welcom-text">
+            {% if user.is_authenticated %}
+                <h2>Welcome back {{ user.username }}!</h2> 
+            {% else %}
+                <h2>Hello Guest!</h2> 
+            {% endif %}
+        </div>
+    </div>
 
     <form method="post">
         {% csrf_token %}
-        <input type="url" name="url" placeholder="Вставьте длинную ссылку" required>
-        <button type="submit">Сократить</button>
+        <input type="url" name="url" placeholder="Insert long link" required>
+        <button type="submit">Reduce</button>
     </form>
 
     {% if new_link %}
-        <p>Ваша короткая ссылка:</p>
+        <p>Your short link:</p>
         <a href="/{{ new_link.short_id }}" target="_blank">
             http://localhost:8000/{{ new_link.short_id }}
         </a>
     {% endif %}
+
 </body>
 </html>

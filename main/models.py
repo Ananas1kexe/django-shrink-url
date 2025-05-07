@@ -1,11 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
-
+from django.conf import settings
 # Create your models here.
 
 class Link(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="links")
     link = models.CharField("link", max_length=55)
     short_id = models.CharField("short_id", max_length=10, unique=True)
+    
+    
+    def __str__(self):
+        return f"{self.short_id} -> {self.link}"
     
 class UserManager(BaseUserManager):
     def create_user(self, username, password = None, **extra_fields):
@@ -16,7 +21,7 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_super_user(self, username, password = None, **extra_fields):
+    def create_superuser(self, username, password = None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         
