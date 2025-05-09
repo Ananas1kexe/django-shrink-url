@@ -35,7 +35,7 @@ class User(AbstractBaseUser):
     avatar = models.ImageField("avatar", blank=True)
     blok = models.BooleanField("block" ,default=False)
     recovery_code = models.CharField("recovery_code")
-    
+    secret_word = models.CharField("secret_word")
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)

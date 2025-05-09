@@ -1,23 +1,53 @@
 {% load static %}
 
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Профиль</title>
+    <title>Short profile</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'app/profile.css' %}">
+    <style>
+        .danger-zone {
+            padding: 20px;
+            background: #3d1f1f;
+            border: 1px solid #ff6f61;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+        
+        .btn-danger {
+            background: #ff4c4c;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            width: 50%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
 
+        }
+        .btn-danger:hover {
+            background: #e03e3e;
+        }
+        
+        .error-message {
+            text-align: center;
+            color: #ff6f61;
+            margin-top: 10px;
+        }
+    </style>        
 </head>
 <body>
     <div class="profile-container">
         <div class="tabs">
-            <button class="tab-button active" onclick="showTab('links')">Ссылки</button>
-            <button class="tab-button" onclick="showTab('settings')">Настройки</button>
+            <button class="tab-button active" onclick="showTab(event, 'links')" id="links-tab" data-tab="links">Links</button>
+            <button class="tab-button" onclick="showTab(event, 'settings')" id="settings-tab" data-tab="settings">Settings</button>
+            
         </div>
-
         <div id="links" class="tab-content active">
-            <h2>Ваши ссылки</h2>
+            <h2>Your links</h2>
             {% if links %}
                 <ul>
                     {% for link in links %}
@@ -29,35 +59,81 @@
                     {% endfor %}
                 </ul>
             {% else %}
-                <p>У вас ещё нет сохранённых ссылок.</p>
+                <p>You don't have any saved links yet.</p>
             {% endif %}
         </div>
 
         <div id="settings" class="tab-content">
-            <h2>Настройки профиля</h2>
-            <form method="post" action="update">
+            <h2>Profile Settings</h2>
+            <form method="post">
                 {% csrf_token %}
-                <label for="avatar">Ссылка на аватар:</label>
-                <input type="text" name="avatar" id="avatar">
 
-                <label for="password">Новый пароль:</label>
+                <label for="username">Change Username:</label>
+                <input type="text" name="username" id="username"/>
+
+
+                <label for="password">Change Password:</label>
                 <input type="password" name="password" id="password">
-
-
-
-                <button class="save-settings" type="submit">Сохранить</button>
+                
+                <label for="check">Confirm Password:</label>
+                <input type="password" name="check" id="check">
+                
+                <label for="check">Select an avatar:</label>
+                <label for="avatar" class="file-input-label">
+                    Select an avatar
+                    <input type="file" accept="image/png, image/jped, image/gif, image/svg" name="avatar" id="avatar" class="file-input"/>
+                </label>
+                <button class="save-settings" type="submit">Save</button>
+                {% if error %}<p class="error-message">{{ error }}</p>{% endif %}
             </form>
-            <p>Your secret key: {{user.recovery_code}}</p>
+            <p>Your secret key: {{recovery_code}}</p>
+
+            <div class="danger-zone">
+                <h3>Danger zone</h3>
+
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            
+
+
+                <form method="POST" enctype="multipart/form-data" class="form-delete">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="delete">
+    
+                    <label for="password">Type your password to confirm account deletion:</label>
+                    <input type="password" autocomplete="off" name="password" id="password" required />
+    
+                    <button type="submit" class="btn-danger">Delete Account</button>
+                </form>
+            </div>
         </div>
     </div>
 
     <script>
-        function showTab(tabId) {
+        function showTab(event, tabId) {
             document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
+            
+            localStorage.setItem('activeTab', tabId);
         }
+    
+        window.onload = function() {
+            const activeTab = localStorage.getItem('activeTab') || 'links'; // По умолчанию links
+            document.getElementById(activeTab).classList.add('active');
+            document.querySelector(`[data-tab=${activeTab}]`).classList.add('active');
+        };
     </script>
+    
+    
 </body>
 </html>
