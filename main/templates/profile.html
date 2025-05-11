@@ -41,28 +41,6 @@
 </head>
 <body>
     <div class="profile-container">
-        <div class="tabs">
-            <button class="tab-button active" onclick="showTab(event, 'links')" id="links-tab" data-tab="links">Links</button>
-            <button class="tab-button" onclick="showTab(event, 'settings')" id="settings-tab" data-tab="settings">Settings</button>
-            
-        </div>
-        <div id="links" class="tab-content active">
-            <h2>Your links</h2>
-            {% if links %}
-                <ul>
-                    {% for link in links %}
-                        <li>
-                            <a href="http://127.0.0.1:8000/{{ link.short_id }}" target="_blank">
-                                http://127.0.0.1:8000/{{ link.short_id }}
-                            </a> — <a href="{{ link.link }}" target="_blank">{{ link.link }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            {% else %}
-                <p>You don't have any saved links yet.</p>
-            {% endif %}
-        </div>
-
         <div id="settings" class="tab-content">
             <h2>Profile Settings</h2>
             <form method="post">
@@ -86,7 +64,22 @@
                 <button class="save-settings" type="submit">Save</button>
                 {% if error %}<p class="error-message">{{ error }}</p>{% endif %}
             </form>
-            <p>Your secret key: {{recovery_code}}</p>
+            <!--<p>Your secret key: {{recovery_code}}</p>-->
+            <div class="secret-key-section">
+                <form method="POST" style="margin-top: 20px;">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="show_secret">
+                    <label for="secret_word">Enter your secret word to reveal the code:</label>
+                    <input type="password" name="secret_word" id="secret_word" required>
+                    <button type="submit">Reveal Secret Code</button>
+                </form>
+
+                {% if secret_shown %}
+                    <p>Your secret key: {{ recovery_code }}</p>
+                {% elif secret_error %}
+                    <p class="error-message">{{ secret_error }}</p>
+                {% endif %}
+            </div>
 
             <div class="danger-zone">
                 <h3>Danger zone</h3>
@@ -128,7 +121,7 @@
         }
     
         window.onload = function() {
-            const activeTab = localStorage.getItem('activeTab') || 'links'; // По умолчанию links
+            const activeTab = localStorage.getItem('activeTab') || 'links'; 
             document.getElementById(activeTab).classList.add('active');
             document.querySelector(`[data-tab=${activeTab}]`).classList.add('active');
         };

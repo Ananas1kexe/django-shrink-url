@@ -9,7 +9,7 @@ urlpatterns = [
     path("logout/", views.logouts, name="logout"),
     path("recover/", views.recover, name="recover"),
     path("profile/", views.profile, name="profile"),
-
+    path("links/", views.links, name="links"),
     path("<str:pk>/", views.redirect_to_original, name="redirect"),
 
 

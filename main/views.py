@@ -132,12 +132,18 @@ def recover(request):
 
     return render(request, "recover.html")
 
+@login_required(login_url="/login")
+def links(request):
+    user = request.user
+    links = user.links.all()
+    return render(request, "links.html", {"links": links})
 
 @login_required(login_url="/login")
 def profile(request):
+    secret_shown = False
+    secret_error = None
     user = request.user
     error = None
-    links = user.links.all()
     recovery_code = decrypt_data(user.recovery_code) if user.recovery_code else None
     
     if request.method == "POST":
@@ -155,16 +161,22 @@ def profile(request):
             username = request.POST.get("username")
             password = request.POST.get("password")
             check = request.POST.get("check")
-            avatar = request.FILES.get("avatar") 
-
+            avatar = request.FILES.get("avatar"
+                                       ) 
+            if request.POST.get("action") == "show_secret":
+                secret_word = request.POST.get("secret_word")
+                if decrypt_data(user.secret_word) == secret_word:
+                    secret_shown = True
+                else:
+                    secret_error = "Incorrect secret word"
             if username:
                 if User.objects.exclude(id=user.id).filter(username=username).exists():
-                    return render(request, "profile.html", {"error": "This name is alredy used", "recovery_code": recovery_code})
+                    return render(request, "profile.html", {"error": "This name is alredy used", "recovery_code": recovery_code if secret_shown else None, "secret_shown": secret_shown, "secret_error": secret_error})
                 else:
                     user.username = username   
             if password:
                 if not check_password(check, user.password):
-                    return render(request, "profile.html", {"error": "Incorrect password", "recovery_code": recovery_code})        
+                    return render(request, "profile.html", {"error": "Incorrect password", "recovery_code": recovery_code if secret_shown else None, "secret_shown": secret_shown, "secret_error": secret_error})        
                 
                 user.set_password(password)
             if avatar:
@@ -174,8 +186,8 @@ def profile(request):
             if password:
                 user = authenticate(username=user.username, password=password)
                 auth_login(request, user)
-            return render(request, "profile.html", {"user": user, "recovery_code": recovery_code})
-    return render(request, "profile.html", {"user": user, "links": links, "error": error, "recovery_code": recovery_code})
+            return render(request, "profile.html", {"user": user, "recovery_code": recovery_code if secret_shown else None, "secret_shown": secret_shown, "secret_error": secret_error})
+    return render(request, "profile.html", {"user": user, "error": error, "recovery_code": recovery_code if secret_shown else None, "secret_shown": secret_shown, "secret_error": secret_error})
 
 def logouts(request): #робит
     logout(request)
