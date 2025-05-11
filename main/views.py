@@ -2,6 +2,7 @@ import os
 import string
 import random
 import secrets
+
 from cryptography.fernet import Fernet
 from .models import Link, User
 from django.shortcuts import render, get_object_or_404, redirect
@@ -10,6 +11,7 @@ from django.contrib.auth import authenticate, logout, login as auth_login
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 from django.contrib import messages
+from django_ratelimit.decorators import ratelimit
 
 KEY_PATH = os.path.join(settings.BASE_DIR, "secret.key")
 
@@ -36,6 +38,7 @@ def rec_code(lenght=6):
     return "".join(secrets.choice(alphaber) for _ in range(lenght))
 
 # Create your views here.
+@ratelimit(key="ip", rate="5/s", method=["GET", "POST"], block=True)
 def index(request):
     if request.method == "POST":
         link = request.POST.get("url")
@@ -84,7 +87,11 @@ def register(request):#робит
         
         if confirmation != password:
             return render(request, "register.html", {"error": "Password do not match"})
-        
+
+
+
+        if secret_word == password:
+            return render(request, "register.html", {"error": "secret word can't be like password"})
         
         hashed_password = make_password(password)
 

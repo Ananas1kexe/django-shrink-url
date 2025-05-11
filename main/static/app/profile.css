@@ -4,7 +4,7 @@ body {
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #121212;
-    color: #E0E0E0;
+    color: #ffffff;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -18,9 +18,17 @@ body {
     border-radius: 12px;
     width: 100%;
     max-width: 600px;
+    transition: box-shadow 0.3s ease;
+}
+.profile-container:hover {
+    margin-top: 50px;
+    background-color: #1e1e1e;
+    padding: 30px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 600px;
     box-shadow: 0 0 15px rgba(0, 255, 231, 0.1);
 }
-
 .tabs {
     display: flex;
     justify-content: space-around;
@@ -30,23 +38,25 @@ body {
 .tab-button {
     padding: 10px 20px;
     border: none;
-    background-color: #00E676;
-    color: #000000;
+    background-color: rgb(31, 31, 31);
+    color: #ffffff;
     border-radius: 8px;
     cursor: pointer;
+    border: 1px solid white;
     transition: background-color 0.3s ease;
 }
 
 .tab-button.active {
-    background-color: rgb(71, 71, 71);
-    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1); 
+    color: #ffffff;
 }
 .tab-button:hover {
-    background-color: #00C853;
-    color: #fff;
+    background-color: rgba(255, 255, 255, 0.1); 
+    color: #ffffff;
 }
 
 .tab-content {
+    text-align: center;
     display: none;
 }
 
@@ -55,12 +65,12 @@ body {
 }
 
 a {
-    color: #00E5FF;
+    color: #ffffff;
     text-decoration: none;
 }
 
 a:hover {
-    color: #1DE9B6;
+    color: #ffffff;
     text-decoration: underline;
 }
 
@@ -74,8 +84,17 @@ label {
     font-weight: bold;
 }
 
-input {
-    width: 100%;
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+input[type="text"],
+input[type="password"] {
+    width: 50%;
     padding: 10px;
     margin-top: 5px;
     border-radius: 8px;
@@ -83,14 +102,79 @@ input {
     background-color: #2a2a2a;
     color: #fff;
 }
-
+button,
+.file-input-label {
+    display: inline-block;
+    cursor: pointer;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: background 0.3s;
+    text-align: center;
+}
+.file-input {
+    display: none;
+}
+.file-input-label {
+    padding: 10px 15px;
+    background: #ff6f61;
+    color: #fff;
+    margin-bottom: 20px;
+    width: 50%;
+    box-sizing: border-box;
+}
+.file-input-label:hover {
+    background: #e04e45;
+}
 button.save-settings {
-    margin-top: 20px;
+    width: 50%;
+    margin-top: 10px;
     padding: 10px;
-    background-color: rgb(150, 150, 150);
+    background-color: rgb(31, 31, 31);
     border: none;
     color: #ffffff;
     font-weight: bold;
     border-radius: 8px;
     cursor: pointer;
+    border: 1px solid white;
+    transition: background-color 0.3s ease;
+}
+button.save-settings:hover {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.1); 
+    border: none;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 8px;
+    border: 1px solid white;
+    cursor: pointer;
+}
+
+
+.danger-zone {
+    padding: 20px;
+    background: #3d1f1f;
+    border: 1px solid #ff6f61;
+    border-radius: 8px;
+    margin-top: 20px;
+}
+
+.btn-danger {
+    background: #ff4c4c;
+    color: #fff;
+    border: none;
+    padding: 12px;
+    width: 100%;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+.btn-danger:hover {
+    background: #e03e3e;
+}
+
+.error-message {
+    text-align: center;
+    color: #ff6f61;
+    margin-top: 10px;
 }
