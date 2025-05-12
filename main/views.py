@@ -104,7 +104,7 @@ def register(request):#робит
     return render(request, "register.html")
 
 
-
+@ratelimit(key="ip", rate="5/s", method=["POST", "GET"], block=True)
 def recover(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -132,12 +132,14 @@ def recover(request):
 
     return render(request, "recover.html")
 
+@ratelimit(key="ip", rate="5/s", method=["POST", "GET"], block=True)
 @login_required(login_url="/login")
 def links(request):
     user = request.user
     links = user.links.all()
     return render(request, "links.html", {"links": links})
 
+@ratelimit(key="ip", rate="5/s", method=["POST", "GET"], block=True)
 @login_required(login_url="/login")
 def profile(request):
     secret_shown = False
