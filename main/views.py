@@ -117,7 +117,7 @@ def recover(request):
             return render(request, "recover.html", {"error": "User not found"})
             
             
-        if user_code != encrypt_data(user.recovery_code):
+        if user_code != decrypt_data(user.recovery_code):
             return render(request, "recover.html", {"error": "Code not corect"})
 
 
